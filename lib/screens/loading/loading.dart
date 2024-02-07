@@ -4,9 +4,10 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 class LoadingPage extends StatefulWidget {
   final Widget destinationPage;
 
-  LoadingPage({required this.destinationPage});
+  const LoadingPage({super.key, required this.destinationPage});
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoadingPageState createState() => _LoadingPageState();
 }
 
@@ -18,7 +19,7 @@ class _LoadingPageState extends State<LoadingPage> {
     super.initState();
 
     // Simulate some time-consuming task
-    Future.delayed(Duration(seconds: 3), () {
+    Future.delayed(const Duration(seconds: 3), () {
       // Set loading to false when the task is complete
       setState(() {
         isLoading = false;
@@ -41,7 +42,7 @@ class _LoadingPageState extends State<LoadingPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             if (isLoading)
-              SpinKitPumpingHeart(
+              const SpinKitPumpingHeart(
                 color: Colors.white,
                 size: 150.0,
               ),

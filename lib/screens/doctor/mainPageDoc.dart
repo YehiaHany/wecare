@@ -1,3 +1,5 @@
+// ignore_for_file: file_names
+
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -17,10 +19,14 @@ class _MainDocPageState extends State<MainDocPage> {
   int _pageIndex = 0;
   @override
   Widget build(BuildContext context) {
+    // ignore: no_leading_underscores_for_local_identifiers
     final List<Widget> _pages = [
       // Add your pages here
       // Example: FirstPage(), SecondPage(), ThirdPage()
-      DoctorPage(userId: widget.userId,),
+      DoctorPage(
+        userId: widget.userId,
+      ),
+      // ignore: prefer_const_constructors
       LogOut(),
     ];
     return Scaffold(
@@ -28,8 +34,8 @@ class _MainDocPageState extends State<MainDocPage> {
         color: Colors.blue.shade900,
         backgroundColor: Colors.white,
         height: 50,
-        animationDuration: Duration(milliseconds: 200),
-        items: [
+        animationDuration: const Duration(milliseconds: 200),
+        items: const [
           Icon(Icons.home, size: 30, color: Colors.white),
           Icon(FontAwesomeIcons.userDoctor, size: 30, color: Colors.white),
         ],

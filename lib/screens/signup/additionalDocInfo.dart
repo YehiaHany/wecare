@@ -1,8 +1,10 @@
+// ignore_for_file: non_constant_identifier_names, avoid_print, file_names
+
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+// import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -20,14 +22,16 @@ class DoctorInfo extends StatefulWidget {
 }
 
 class _DoctorInfoState extends State<DoctorInfo> {
-  TextEditingController _doctorSpecializationController = TextEditingController();
-  List<TextEditingController> _workingPlaceControllers = [TextEditingController()];
-  TextEditingController _universityController = TextEditingController();
+  final TextEditingController _doctorSpecializationController =
+      TextEditingController();
+  final List<TextEditingController> _workingPlaceControllers = [
+    TextEditingController()
+  ];
+  final TextEditingController _universityController = TextEditingController();
   DateTime? _selectedGraduationDate;
   File? _pdf;
-  TextEditingController _pdfController = TextEditingController();
+  final TextEditingController _pdfController = TextEditingController();
   bool isNext = false;
-
 
   Future<String?> _pickPDF() async {
     try {
@@ -47,12 +51,14 @@ class _DoctorInfoState extends State<DoctorInfo> {
 
     return null;
   }
+
   Future<String> _uploadImageToStorage(File pdf) async {
+    // ignore: unnecessary_null_comparison
     if (pdf != null) {
-      final path= 'files/${pdf.hashCode}.pdf';
+      final path = 'files/${pdf.hashCode}.pdf';
       final ref = FirebaseStorage.instance.ref().child(path);
       UploadTask? uploadTask = ref.putFile(pdf);
-      final snapshot = await uploadTask!.whenComplete(() => {});
+      final snapshot = await uploadTask.whenComplete(() => {});
       final urlDownload = await snapshot.ref.getDownloadURL();
       return urlDownload;
     } else {
@@ -62,17 +68,22 @@ class _DoctorInfoState extends State<DoctorInfo> {
 
   Future<void> _saveDoctorInfo() async {
     try {
-      CollectionReference doctorsCollection = FirebaseFirestore.instance.collection('doctors');
+      CollectionReference doctorsCollection =
+          FirebaseFirestore.instance.collection('doctors');
       String Url = '';
       if (_pdf != null) {
         Url = await _uploadImageToStorage(_pdf!);
       }
       await doctorsCollection.doc(widget.userId).set({
         'specialization': _doctorSpecializationController.text,
-        'workingPlaces': _workingPlaceControllers.map((controller) => controller.text).toList(),
+        'workingPlaces': _workingPlaceControllers
+            .map((controller) => controller.text)
+            .toList(),
         'university': _universityController.text,
-        'graduationDate': _selectedGraduationDate != null ? _selectedGraduationDate!.year.toString() : '',
-        'pdfPath':Url,
+        'graduationDate': _selectedGraduationDate != null
+            ? _selectedGraduationDate!.year.toString()
+            : '',
+        'pdfPath': Url,
       }, SetOptions(merge: true));
       showToast(message: 'Doctor information saved/updated successfully');
     } catch (e) {
@@ -80,7 +91,6 @@ class _DoctorInfoState extends State<DoctorInfo> {
       // Handle the error
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -92,7 +102,7 @@ class _DoctorInfoState extends State<DoctorInfo> {
           onTap: () {
             Navigator.pop(context);
           },
-          child: Icon(
+          child: const Icon(
             Icons.arrow_back_ios,
             color: Colors.black,
             size: 35,
@@ -107,11 +117,11 @@ class _DoctorInfoState extends State<DoctorInfo> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       'Info',
                       style: TextStyle(
                         fontSize: 50,
@@ -137,29 +147,32 @@ class _DoctorInfoState extends State<DoctorInfo> {
                   child: Form(
                     child: Column(
                       children: [
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         TextFormField(
                           cursorColor: Colors.black,
                           controller: _doctorSpecializationController,
                           decoration: InputDecoration(
                             labelText: 'Doctor Specialization',
-                            labelStyle: TextStyle(color: Colors.black),
-                            prefixIcon: Icon(Icons.healing, color: Colors.black),
+                            labelStyle: const TextStyle(color: Colors.black),
+                            prefixIcon:
+                                const Icon(Icons.healing, color: Colors.black),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 width: 3.0,
                                 color: Colors.black,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(width: 3.0),
+                              borderSide: const BorderSide(width: 3.0),
                             ),
                           ),
                         ),
-                        SizedBox(height: 15),
-                        for (int i = 0; i < _workingPlaceControllers.length; i++)
+                        const SizedBox(height: 15),
+                        for (int i = 0;
+                            i < _workingPlaceControllers.length;
+                            i++)
                           Column(
                             children: [
                               Row(
@@ -170,25 +183,31 @@ class _DoctorInfoState extends State<DoctorInfo> {
                                       controller: _workingPlaceControllers[i],
                                       decoration: InputDecoration(
                                         labelText: 'Working Place ${i + 1}',
-                                        labelStyle: TextStyle(color: Colors.black),
-                                        prefixIcon: Icon(Icons.local_hospital, color: Colors.black),
+                                        labelStyle: const TextStyle(
+                                            color: Colors.black),
+                                        prefixIcon: const Icon(
+                                            Icons.local_hospital,
+                                            color: Colors.black),
                                         focusedBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(30.0),
-                                          borderSide: BorderSide(
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
+                                          borderSide: const BorderSide(
                                             width: 3.0,
                                             color: Colors.black,
                                           ),
                                         ),
                                         enabledBorder: OutlineInputBorder(
-                                          borderRadius: BorderRadius.circular(30.0),
-                                          borderSide: BorderSide(width: 3.0),
+                                          borderRadius:
+                                              BorderRadius.circular(30.0),
+                                          borderSide:
+                                              const BorderSide(width: 3.0),
                                         ),
                                       ),
                                     ),
                                   ),
                                   if (_workingPlaceControllers.length > 1)
                                     IconButton(
-                                      icon: Icon(Icons.remove_circle),
+                                      icon: const Icon(Icons.remove_circle),
                                       onPressed: () {
                                         setState(() {
                                           _workingPlaceControllers.removeAt(i);
@@ -196,16 +215,17 @@ class _DoctorInfoState extends State<DoctorInfo> {
                                       },
                                     ),
                                   IconButton(
-                                    icon: Icon(Icons.add_circle),
+                                    icon: const Icon(Icons.add_circle),
                                     onPressed: () {
                                       setState(() {
-                                        _workingPlaceControllers.add(TextEditingController());
+                                        _workingPlaceControllers
+                                            .add(TextEditingController());
                                       });
                                     },
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 15),
+                              const SizedBox(height: 15),
                             ],
                           ),
                         TextFormField(
@@ -213,34 +233,38 @@ class _DoctorInfoState extends State<DoctorInfo> {
                           controller: _universityController,
                           decoration: InputDecoration(
                             labelText: 'University Graduated From',
-                            labelStyle: TextStyle(color: Colors.black),
-                            prefixIcon: Icon(FontAwesomeIcons.university, color: Colors.black),
+                            labelStyle: const TextStyle(color: Colors.black),
+                            // ignore: deprecated_member_use
+                            prefixIcon: const Icon(FontAwesomeIcons.university,
+                                color: Colors.black),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(
+                              borderSide: const BorderSide(
                                 width: 3.0,
                                 color: Colors.black,
                               ),
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(width: 3.0),
+                              borderSide: const BorderSide(width: 3.0),
                             ),
                           ),
                         ),
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
                         Container(
                           width: double.infinity,
                           height: 60,
-                          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 20),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.black, width: 3),
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.calendar_today, color: Colors.black),
-                              SizedBox(width: 10),
+                              const Icon(Icons.calendar_today,
+                                  color: Colors.black),
+                              const SizedBox(width: 10),
                               TextButton(
                                 onPressed: () async {
                                   DateTime? pickedDate = await showDatePicker(
@@ -250,7 +274,8 @@ class _DoctorInfoState extends State<DoctorInfo> {
                                     lastDate: DateTime.now(),
                                   );
 
-                                  if (pickedDate != null && pickedDate != _selectedGraduationDate) {
+                                  if (pickedDate != null &&
+                                      pickedDate != _selectedGraduationDate) {
                                     setState(() {
                                       _selectedGraduationDate = pickedDate;
                                     });
@@ -260,26 +285,28 @@ class _DoctorInfoState extends State<DoctorInfo> {
                                   _selectedGraduationDate != null
                                       ? 'Year: ${_selectedGraduationDate!.year}'
                                       : 'Select Graduated Year',
-                                  style: TextStyle(color: Colors.black, fontSize: 17),
+                                  style: const TextStyle(
+                                      color: Colors.black, fontSize: 17),
                                 ),
                               ),
                             ],
                           ),
                         ),
-
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
                         Container(
                           width: double.infinity,
                           height: 60,
-                          padding: EdgeInsets.symmetric(vertical: 0, horizontal: 20),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 0, horizontal: 20),
                           decoration: BoxDecoration(
                             border: Border.all(color: Colors.black, width: 3),
                             borderRadius: BorderRadius.circular(30.0),
                           ),
                           child: Row(
                             children: [
-                              Icon(Icons.picture_as_pdf, color: Colors.black),
-                              SizedBox(width: 10),
+                              const Icon(Icons.picture_as_pdf,
+                                  color: Colors.black),
+                              const SizedBox(width: 10),
                               TextButton(
                                 onPressed: () async {
                                   String? pickedPDF = await _pickPDF();
@@ -293,47 +320,54 @@ class _DoctorInfoState extends State<DoctorInfo> {
                                   _pdfController.text.isNotEmpty
                                       ? 'PDF Uploaded'
                                       : 'Upload PHD Or Master',
-                                  style: TextStyle(color: Colors.black, fontSize: 18),
+                                  style: const TextStyle(
+                                      color: Colors.black, fontSize: 18),
                                 ),
                               ),
                             ],
                           ),
                         ),
-
-                        SizedBox(height: 15),
-                        isNext ? CircularProgressIndicator(color: Colors.blue,):ElevatedButton(
-                          onPressed: () async {
-                            setState(() {
-                              isNext = true;
-                            });
-                            await _saveDoctorInfo();
-                            setState(() {
-                              isNext = false;
-                            });
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => LoadingPage(destinationPage: MainDocPage(userId: widget.userId)),
+                        const SizedBox(height: 15),
+                        isNext
+                            ? const CircularProgressIndicator(
+                                color: Colors.blue,
+                              )
+                            : ElevatedButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    isNext = true;
+                                  });
+                                  await _saveDoctorInfo();
+                                  setState(() {
+                                    isNext = false;
+                                  });
+                                  // ignore: use_build_context_synchronously
+                                  Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => LoadingPage(
+                                          destinationPage: MainDocPage(
+                                              userId: widget.userId)),
+                                    ),
+                                  );
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                  ),
+                                  minimumSize: const Size(200.0, 50.0),
+                                ),
+                                child: const Text(
+                                  'Next',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
                               ),
-                            );
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            minimumSize: Size(200.0, 50.0),
-                          ),
-                          child: Text(
-                            'Next',
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
                       ],
                     ),
                   ),

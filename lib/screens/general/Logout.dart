@@ -1,3 +1,5 @@
+// ignore_for_file: file_names, prefer_const_constructors
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:wecare/screens/home/home.dart';
@@ -15,7 +17,7 @@ class _LogOutState extends State<LogOut> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: Icon(Icons.arrow_back_ios),
+        leading: const Icon(Icons.arrow_back_ios),
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
@@ -24,28 +26,29 @@ class _LogOutState extends State<LogOut> {
           padding: const EdgeInsets.all(16.0),
           child: ElevatedButton(
             style: ElevatedButton.styleFrom(
-              elevation: 30,
-              backgroundColor: Colors.blue.shade900,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(50)
-              ),
-              minimumSize: Size(300, 100)
-
-            ),
+                elevation: 30,
+                backgroundColor: Colors.blue.shade900,
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(50)),
+                minimumSize: const Size(300, 100)),
             onPressed: () {
               FirebaseAuth.instance.signOut();
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => LoadingPage(destinationPage: Home()),
+                  builder: (context) =>
+                      LoadingPage(destinationPage: const Home()),
                 ),
               );
             },
-            child:  Row(
+            child: const Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(Icons.exit_to_app,size: 50),
-                Text('LogOut',style: TextStyle(fontSize: 30),)
+                Icon(Icons.exit_to_app, size: 50),
+                Text(
+                  'LogOut',
+                  style: TextStyle(fontSize: 30),
+                )
               ],
             ),
           ),

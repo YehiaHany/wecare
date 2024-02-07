@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_const_constructors
+
 import 'package:flutter/material.dart';
 import '../loading/loading.dart';
 import '../signin/signin.dart';
@@ -28,7 +30,7 @@ class _HomeState extends State<Home> {
             ),
 
             // Slogan
-            Text(
+            const Text(
               'We Care And Of You We Will Take Care ',
               style: TextStyle(
                 color: Colors.white,
@@ -36,7 +38,7 @@ class _HomeState extends State<Home> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 40.0),
+            const SizedBox(height: 40.0),
 
             // Sign Up Button
             ElevatedButton(
@@ -44,7 +46,9 @@ class _HomeState extends State<Home> {
                 // Navigate to LoadingPage
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoadingPage(destinationPage: SignUpPage())),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoadingPage(destinationPage: SignUpPage())),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -53,18 +57,20 @@ class _HomeState extends State<Home> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                minimumSize: Size(300.0, 50.0), // button width and height
+                minimumSize: const Size(300.0, 50.0), // button width and height
               ),
-              child: Text('Sign Up'),
+              child: const Text('Sign Up'),
             ),
-            SizedBox(height: 40.0),
+            const SizedBox(height: 40.0),
             // Sign In Button
             ElevatedButton(
               onPressed: () {
                 // Navigate to LoadingPage
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => LoadingPage(destinationPage: SignInPage())),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          LoadingPage(destinationPage: const SignInPage())),
                 );
               },
               style: ElevatedButton.styleFrom(
@@ -73,9 +79,9 @@ class _HomeState extends State<Home> {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(20.0),
                 ),
-                minimumSize: Size(300.0, 50.0), // button width and height
+                minimumSize: const Size(300.0, 50.0), // button width and height
               ),
-              child: Text('Sign In'),
+              child: const Text('Sign In'),
             ),
           ],
         ),
@@ -83,6 +89,3 @@ class _HomeState extends State<Home> {
     );
   }
 }
-
-
-

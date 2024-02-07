@@ -1,9 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sliding_switch/sliding_switch.dart';
-
 
 class DoctorPage extends StatefulWidget {
   final String userId;
@@ -12,7 +10,6 @@ class DoctorPage extends StatefulWidget {
   @override
   State<DoctorPage> createState() => _DoctorPageState();
 }
-
 
 class _DoctorPageState extends State<DoctorPage> {
   late Stream<DocumentSnapshot<Map<String, dynamic>>> _doctorInfoStream;
@@ -26,8 +23,8 @@ class _DoctorPageState extends State<DoctorPage> {
   }
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getDoctorInfoStream(
-      String collection,
-      ) {
+    String collection,
+  ) {
     return FirebaseFirestore.instance
         .collection(collection)
         .doc(widget.userId)
@@ -50,14 +47,15 @@ class _DoctorPageState extends State<DoctorPage> {
               stream: _doctorInfoStream,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                    return CircularProgressIndicator();}
-                else if (snapshot.hasData && snapshot.data != null) {
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasData && snapshot.data != null) {
                   Map<String, dynamic> doctorData = snapshot.data!.data() ?? {};
                   String doctorName = doctorData['username'] ?? '';
                   String imageUrl = doctorData['profileImage'] ?? '';
                   String email = doctorData['email'] ?? '';
                   String phoneNumber = doctorData['phonenumber'] ?? '';
-                  List<dynamic> workingPlaces = doctorData['workingPlaces'] ?? '';
+                  List<dynamic> workingPlaces =
+                      doctorData['workingPlaces'] ?? '';
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -71,7 +69,7 @@ class _DoctorPageState extends State<DoctorPage> {
                               borderRadius: BorderRadius.circular(25),
                               color: Colors.grey.shade500,
                             ),
-                            child: Center(
+                            child: const Center(
                               child: Text(''),
                             ),
                           ),
@@ -81,7 +79,7 @@ class _DoctorPageState extends State<DoctorPage> {
                             child: Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
-                                '$doctorName',
+                                doctorName,
                                 style: GoogleFonts.raleway(
                                   color: Colors.white,
                                   fontSize: 30,
@@ -95,21 +93,21 @@ class _DoctorPageState extends State<DoctorPage> {
                             right: -25,
                             child: imageUrl.isNotEmpty
                                 ? Image.network(
-                              imageUrl,
-                              width: 270,
-                              height: 270,
-                            )
-                                : SizedBox(),
+                                    imageUrl,
+                                    width: 270,
+                                    height: 270,
+                                  )
+                                : const SizedBox(),
                           ),
                         ],
                       ),
-                      SizedBox(height: 16),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Container(
                         alignment: Alignment.center,
                         child: SlidingSwitch(
                           value: isOldPatient,
-                          width: MediaQuery.of(context).size.width-31 ,
+                          width: MediaQuery.of(context).size.width - 31,
                           onChanged: (bool value) {
                             setState(() {
                               isOldPatient = value;
@@ -126,11 +124,10 @@ class _DoctorPageState extends State<DoctorPage> {
                           background: Colors.grey.shade300,
                           buttonColor: Colors.blue.shade900,
                           inactiveColor: const Color(0xff636f7b),
-
                         ),
                       ),
-                      SizedBox(height: 16),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Card(
                         elevation: 15,
                         shape: RoundedRectangleBorder(
@@ -152,7 +149,7 @@ class _DoctorPageState extends State<DoctorPage> {
                                 ),
                                 title: Text(
                                   email,
-                                  style: TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black),
                                 ),
                               ),
                               ListTile(
@@ -162,7 +159,7 @@ class _DoctorPageState extends State<DoctorPage> {
                                 ),
                                 title: Text(
                                   phoneNumber,
-                                  style: TextStyle(color: Colors.black),
+                                  style: const TextStyle(color: Colors.black),
                                 ),
                               ),
                               for (int i = 0; i < workingPlaces.length; i++)
@@ -173,7 +170,7 @@ class _DoctorPageState extends State<DoctorPage> {
                                   ),
                                   title: Text(
                                     workingPlaces[i],
-                                    style: TextStyle(color: Colors.black),
+                                    style: const TextStyle(color: Colors.black),
                                   ),
                                 ),
                             ],
@@ -185,7 +182,7 @@ class _DoctorPageState extends State<DoctorPage> {
                 } else if (snapshot.hasError) {
                   return Text("Error: ${snapshot.error}");
                 } else {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 }
               },
             ),

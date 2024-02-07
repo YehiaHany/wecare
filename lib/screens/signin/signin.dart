@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -10,15 +12,18 @@ import '../general/toast.dart';
 import '../signup/signup.dart';
 
 class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
+
   @override
+  // ignore: library_private_types_in_public_api
   _SignInPageState createState() => _SignInPageState();
 }
 
 class _SignInPageState extends State<SignInPage> {
   final FirebaseAuthService _auth = FirebaseAuthService();
   final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
-  TextEditingController _emailController = TextEditingController();
-  TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
   bool _passwordVisible = false;
   bool _isDoctor = false;
   bool isSigningIn = false;
@@ -48,7 +53,7 @@ class _SignInPageState extends State<SignInPage> {
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
               Padding(
-                padding: EdgeInsets.only(bottom: 10),
+                padding: const EdgeInsets.only(bottom: 10),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -78,14 +83,15 @@ class _SignInPageState extends State<SignInPage> {
                   child: Form(
                     child: Column(
                       children: [
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         TextFormField(
                           cursorColor: Colors.black,
                           controller: _emailController,
                           decoration: InputDecoration(
                             labelText: 'Email',
-                            labelStyle: TextStyle(color: Colors.black),
-                            prefixIcon: Icon(Icons.email, color: Colors.black),
+                            labelStyle: const TextStyle(color: Colors.black),
+                            prefixIcon:
+                                const Icon(Icons.email, color: Colors.black),
                             focusedBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
                               borderSide: const BorderSide(
@@ -95,7 +101,7 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(width: 3.0),
+                              borderSide: const BorderSide(width: 3.0),
                             ),
                           ),
                         ),
@@ -105,8 +111,9 @@ class _SignInPageState extends State<SignInPage> {
                           controller: _passwordController,
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            labelStyle: TextStyle(color: Colors.black),
-                            prefixIcon: Icon(Icons.lock, color: Colors.black),
+                            labelStyle: const TextStyle(color: Colors.black),
+                            prefixIcon:
+                                const Icon(Icons.lock, color: Colors.black),
                             suffixIcon: IconButton(
                               icon: Icon(
                                 _passwordVisible
@@ -129,7 +136,7 @@ class _SignInPageState extends State<SignInPage> {
                             ),
                             enabledBorder: OutlineInputBorder(
                               borderRadius: BorderRadius.circular(30.0),
-                              borderSide: BorderSide(width: 3.0),
+                              borderSide: const BorderSide(width: 3.0),
                             ),
                           ),
                           obscureText: !_passwordVisible,
@@ -156,50 +163,65 @@ class _SignInPageState extends State<SignInPage> {
                           inactiveColor: const Color(0xff636f7b),
                         ),
                         const SizedBox(height: 30),
-                        isSigningIn ? const CircularProgressIndicator(color: Colors.blue,):ElevatedButton(
-                          onPressed: () async {
-                            setState(() {
-                              isSigningIn = true;
-                            });
-                            String email = _emailController.text;
-                            String password = _passwordController.text;
+                        isSigningIn
+                            ? const CircularProgressIndicator(
+                                color: Colors.blue,
+                              )
+                            : ElevatedButton(
+                                onPressed: () async {
+                                  setState(() {
+                                    isSigningIn = true;
+                                  });
+                                  String email = _emailController.text;
+                                  String password = _passwordController.text;
 
-                            // Add your authentication logic here
-                            try {
-                              User? user = await _auth.signInWithEmailAndPassword(email, password);
-                              setState(() {
-                                isSigningIn = false;
-                              });
-                              if (user != null) {
-                                showToast(message: "User is successfully signed in");
-                                _isDoctor ?Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => LoadingPage(destinationPage: MainDocPage(userId: user!.uid),),
+                                  // Add your authentication logic here
+                                  try {
+                                    User? user =
+                                        await _auth.signInWithEmailAndPassword(
+                                            email, password);
+                                    setState(() {
+                                      isSigningIn = false;
+                                    });
+                                    if (user != null) {
+                                      showToast(
+                                          message:
+                                              "User is successfully signed in");
+                                      _isDoctor
+                                          ? Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    LoadingPage(
+                                                  destinationPage: MainDocPage(
+                                                      userId: user.uid),
+                                                ),
+                                              ),
+                                            )
+                                          : 'patients';
+                                    } else {}
+                                  } catch (e) {
+                                    // ignore: avoid_print
+                                    print(e);
+                                  }
+                                },
+                                style: ElevatedButton.styleFrom(
+                                  backgroundColor: Colors.white,
+                                  foregroundColor: Colors.black,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(20.0),
                                   ),
-                                ): 'patients';
-                              } else {
-                              }
-                            } catch (e) {
-                            }
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.white,
-                            foregroundColor: Colors.black,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20.0),
-                            ),
-                            minimumSize: Size(200.0, 50.0),
-                          ),
-                          child: const Text(
-                            'Sign In',
-                            style: TextStyle(
-                              fontSize: 30,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
+                                  minimumSize: const Size(200.0, 50.0),
+                                ),
+                                child: const Text(
+                                  'Sign In',
+                                  style: TextStyle(
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.black,
+                                  ),
+                                ),
+                              ),
                         const SizedBox(height: 15),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
@@ -216,7 +238,8 @@ class _SignInPageState extends State<SignInPage> {
                                 // Navigate to the sign-up page
                                 Navigator.pushReplacement(
                                   context,
-                                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                                  MaterialPageRoute(
+                                      builder: (context) => SignUpPage()),
                                 );
                               },
                               child: const Text(
@@ -235,38 +258,42 @@ class _SignInPageState extends State<SignInPage> {
                           thickness: 1,
                           color: Colors.black,
                         ),
-                        SizedBox(height: 15),
+                        const SizedBox(height: 15),
                         const Text(
                           'Or continue with',
                           style: TextStyle(fontSize: 18, color: Colors.black),
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         ElevatedButton.icon(
                           onPressed: () async {
+                            // ignore: no_leading_underscores_for_local_identifiers
                             final GoogleSignIn _googleSignIn = GoogleSignIn();
 
                             try {
+                              final GoogleSignInAccount? googleSignInAccount =
+                                  await _googleSignIn.signIn();
 
-                              final GoogleSignInAccount? googleSignInAccount = await _googleSignIn.signIn();
+                              if (googleSignInAccount != null) {
+                                final GoogleSignInAuthentication
+                                    googleSignInAuthentication =
+                                    await googleSignInAccount.authentication;
 
-                              if(googleSignInAccount != null ){
-                                final GoogleSignInAuthentication googleSignInAuthentication = await
-                                googleSignInAccount.authentication;
-
-                                final AuthCredential credential = GoogleAuthProvider.credential(
+                                final AuthCredential credential =
+                                    GoogleAuthProvider.credential(
                                   idToken: googleSignInAuthentication.idToken,
-                                  accessToken: googleSignInAuthentication.accessToken,
+                                  accessToken:
+                                      googleSignInAuthentication.accessToken,
                                 );
 
-                                await _firebaseAuth.signInWithCredential(credential);
+                                await _firebaseAuth
+                                    .signInWithCredential(credential);
                                 // Navigator.pushNamed(context, "/home");
                               }
-
-                            }catch(e) {
+                            } catch (e) {
                               showToast(message: "$e");
                             }
                           },
-                          icon: Icon(FontAwesomeIcons.google),
+                          icon: const Icon(FontAwesomeIcons.google),
                           label: const Text('Sign In with Google'),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
