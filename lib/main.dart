@@ -40,6 +40,8 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue[900]!)),
       home: FirebaseAuth.instance.currentUser == null
           ? Home()
           : MainDocPage(userId: FirebaseAuth.instance.currentUser!.uid),
