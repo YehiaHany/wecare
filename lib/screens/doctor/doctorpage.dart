@@ -2,7 +2,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:sliding_switch/sliding_switch.dart';
-import 'package:wecare/screens/doctor/patients_data.dart';
 
 class DoctorPage extends StatefulWidget {
   final String userId;
@@ -15,7 +14,6 @@ class DoctorPage extends StatefulWidget {
 class _DoctorPageState extends State<DoctorPage> {
   late Stream<DocumentSnapshot<Map<String, dynamic>>> _doctorInfoStream;
   bool isOldPatient = false;
-  String dr = '';
   @override
   void initState() {
     super.initState();
@@ -57,7 +55,6 @@ class _DoctorPageState extends State<DoctorPage> {
                   String phoneNumber = doctorData['phonenumber'] ?? '';
                   List<dynamic> workingPlaces =
                       doctorData['workingPlaces'] ?? '';
-                  dr = doctorData['ssn'] ?? '';
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -178,23 +175,6 @@ class _DoctorPageState extends State<DoctorPage> {
                             ],
                           ),
                         ),
-                      ),
-                      Column(
-                        children: [
-                          ElevatedButton(
-                            child: const Text('Patients data'),
-                            onPressed: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute<void>(
-                                  builder: (BuildContext context) =>
-                                      PatientsDataPage(
-                                    dr: dr,
-                                  ),
-                                ),
-                              );
-                            },
-                          )
-                        ],
                       ),
                     ],
                   );

@@ -3,6 +3,7 @@
 import 'package:flutter/material.dart';
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wecare/screens/doctor/patients_data.dart';
 import 'package:wecare/screens/general/Logout.dart';
 
 import 'doctorpage.dart';
@@ -23,9 +24,8 @@ class _MainDocPageState extends State<MainDocPage> {
     final List<Widget> _pages = [
       // Add your pages here
       // Example: FirstPage(), SecondPage(), ThirdPage()
-      DoctorPage(
-        userId: widget.userId,
-      ),
+      DoctorPage(userId: widget.userId),
+      PatientsDataPage(dr: widget.userId),
       // ignore: prefer_const_constructors
       LogOut(),
     ];
@@ -37,6 +37,8 @@ class _MainDocPageState extends State<MainDocPage> {
         animationDuration: const Duration(milliseconds: 200),
         items: const [
           Icon(Icons.home, size: 30, color: Colors.white),
+          Icon(Icons.medical_information_rounded,
+              size: 30, color: Colors.white),
           Icon(FontAwesomeIcons.userDoctor, size: 30, color: Colors.white),
         ],
         onTap: (index) {
