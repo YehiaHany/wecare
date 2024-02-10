@@ -3,6 +3,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:wecare/screens/doctor/view_patient_profile.dart';
 
 class PatientsDataPage extends StatefulWidget {
   const PatientsDataPage({super.key, required this.dr});
@@ -30,25 +31,32 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
   buildPatients() async {
     List<Widget> temp = [];
     await getData();
-    temp.add(ElevatedButton(
-      onPressed: () {
+    temp.add(InkWell(
+      onTap: () {
         print('you pressed on the dummy tile');
       },
-      child: const ListTile(
-        title: Text("username"),
-        subtitle: Text("gender"),
-        leading: Text("phone"),
-        trailing: Text("age"),
+      child: ListTile(
+        textColor: Colors.white,
+        tileColor: Colors.blue[900],
+        title: const Text("username"),
+        subtitle: const Text("gender"),
+        // leading: const Text("phone"),
+        trailing: const Text("age"),
       ),
     ));
     data.forEach((datai) {
       temp.add(Container(
         margin: const EdgeInsets.only(top: 10),
-        child: ElevatedButton(
-          onPressed: () {
-            print('you pressed on ${datai["username"]}');
+        child: InkWell(
+          onTap: () {
+            print('you pressed on ${datai["username"]} with id ${datai.id}');
+            Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => PatientProfile(patient: datai.id)));
           },
           child: ListTile(
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
+            tileColor: Theme.of(context).primaryColorLight,
             title: Text("${datai["username"]}"),
             subtitle: Text("${datai["gender"]}"),
             leading: Text("${datai["phonenumber"]}"),
@@ -69,11 +77,11 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Theme.of(context).colorScheme.primary,
-        foregroundColor: Theme.of(context).colorScheme.background,
-        title: const Text("Patients data"),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: Theme.of(context).colorScheme.primary,
+      //   foregroundColor: Theme.of(context).colorScheme.background,
+      //   title: const Text("Patients data"),
+      // ),
       body: FutureBuilder<dynamic>(
         future: patients,
         builder: (context, snapshot) {
@@ -82,8 +90,21 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
           } else if (snapshot.hasError) {
             return Text('Error: ${snapshot.error}');
           } else {
-            return ListView(
-                padding: const EdgeInsets.all(10), children: snapshot.data!);
+            return SafeArea(
+              child: Container(
+                color: Colors.blue[150],
+                margin: const EdgeInsets.fromLTRB(5, 5, 5, 20),
+                child: Card(
+                  elevation: 10,
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10)),
+                  child: ListView(
+                      padding: const EdgeInsets.all(10),
+                      children: snapshot.data!),
+                ),
+              ),
+            );
           }
         },
       ),
