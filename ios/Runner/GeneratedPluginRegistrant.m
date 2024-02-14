@@ -60,6 +60,12 @@
 @import path_provider_foundation;
 #endif
 
+#if __has_include(<rive_common/RivePlugin.h>)
+#import <rive_common/RivePlugin.h>
+#else
+@import rive_common;
+#endif
+
 @implementation GeneratedPluginRegistrant
 
 + (void)registerWithRegistry:(NSObject<FlutterPluginRegistry>*)registry {
@@ -72,6 +78,7 @@
   [FLTGoogleSignInPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTGoogleSignInPlugin"]];
   [FLTImagePickerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTImagePickerPlugin"]];
   [PathProviderPlugin registerWithRegistrar:[registry registrarForPlugin:@"PathProviderPlugin"]];
+  [RivePlugin registerWithRegistrar:[registry registrarForPlugin:@"RivePlugin"]];
 }
 
 @end
