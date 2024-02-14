@@ -95,6 +95,7 @@ class _DoctorPageState extends State<DoctorPage> {
                                     imageUrl,
                                     width: 270,
                                     height: 270,
+                                    fit: BoxFit.cover,
                                   )
                                 : const SizedBox(),
                           ),
