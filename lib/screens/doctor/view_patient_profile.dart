@@ -2,6 +2,7 @@
 //             .map((controller) => controller.text)
 //             .toList(),
 
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -10,20 +11,6 @@ import 'add_meds.dart';
 
 CollectionReference patients =
     FirebaseFirestore.instance.collection('patients');
-
-List<Widget> buildMeds(List<dynamic> meds) {
-  List<Widget> medsWidget = [];
-
-  meds.forEach((element) {
-    medsWidget.add(ListTile(
-      // leading: Text("${element}"),
-      title: Text("${element["name"]}"),
-      subtitle: Text("${element["dose"]}"),
-      trailing: Text("${element["times"]}"),
-    ));
-  });
-  return medsWidget;
-}
 
 class PatientProfile extends StatefulWidget {
   final String patient;
@@ -34,6 +21,44 @@ class PatientProfile extends StatefulWidget {
 }
 
 class _PatientProfileState extends State<PatientProfile> {
+  List<Widget> buildMeds(List<dynamic> meds, Function setState) {
+    List<Widget> medsWidget = [];
+
+    meds.forEach((element) {
+      medsWidget.add(Dismissible(
+        key: Key(element.toString()),
+        child: ListTile(
+          // leading: Text("${element}"),
+          title: Text("${element["name"]}"),
+          subtitle: Text("${element["dose"]}"),
+          trailing: Text("${element["times"]}"),
+        ),
+        onDismissed: (direction) {
+          setState(() {
+            medsWidget.remove(element);
+          });
+
+          patients.doc(widget.patient).update({
+            'meds': FieldValue.arrayRemove([
+              {
+                'dose': element["dose"],
+                'name': element["name"],
+                'times': element["times"]
+              }
+            ])
+          }).then((value) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('${element['name']} dismissed')));
+          }).catchError((error) {
+            ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(content: Text('Error deleting ${element['name']}')));
+          });
+        },
+      ));
+    });
+    return medsWidget;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<DocumentSnapshot>(
@@ -105,7 +130,7 @@ class _PatientProfileState extends State<PatientProfile> {
                                 const Text("phone"),
                                 Text("${data['phonenumber']}")
                               ]),
-                          Column(children: buildMeds(meds))
+                          Column(children: buildMeds(meds, setState))
 
                           // ListView.builder(
                           //   itemCount: meds.length,

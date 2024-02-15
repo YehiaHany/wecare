@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:wecare/screens/doctor/components/custom_testformfield.dart';
+import 'package:wecare/screens/doctor/components/custom_textformfield.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 
 TextEditingController medName = TextEditingController();
