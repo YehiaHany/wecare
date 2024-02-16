@@ -2,7 +2,7 @@
 //             .map((controller) => controller.text)
 //             .toList(),
 
-import 'package:awesome_dialog/awesome_dialog.dart';
+// import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
@@ -27,12 +27,6 @@ class _PatientProfileState extends State<PatientProfile> {
     meds.forEach((element) {
       medsWidget.add(Dismissible(
         key: Key(element.toString()),
-        child: ListTile(
-          // leading: Text("${element}"),
-          title: Text("${element["name"]}"),
-          subtitle: Text("${element["dose"]}"),
-          trailing: Text("${element["times"]}"),
-        ),
         onDismissed: (direction) {
           setState(() {
             medsWidget.remove(element);
@@ -48,12 +42,40 @@ class _PatientProfileState extends State<PatientProfile> {
             ])
           }).then((value) {
             ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('${element['name']} dismissed')));
+                SnackBar(content: Text('${element['name']} deleted')));
           }).catchError((error) {
             ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('Error deleting ${element['name']}')));
           });
         },
+        background: Container(
+          color: Colors.red,
+          child: const Flex(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              direction: Axis.horizontal,
+              children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.delete_forever_rounded, color: Colors.white),
+                    Text('Delete', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.delete_forever_rounded, color: Colors.white),
+                    Text('Delete', style: TextStyle(color: Colors.white)),
+                  ],
+                ),
+              ]),
+        ),
+        child: ListTile(
+          // leading: Text("${element}"),
+          title: Text("${element["name"]}"),
+          subtitle: Text("${element["dose"]}"),
+          trailing: Text("${element["times"]}"),
+        ),
       ));
     });
     return medsWidget;
