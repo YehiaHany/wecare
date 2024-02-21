@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 
 class AppointmentPage extends StatefulWidget {
   final String doctorId;
@@ -122,17 +124,17 @@ class _AppointmentPageState extends State<AppointmentPage> {
             .get();
 
     // Get current user (patient)
-    // User? user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
 
-    // if (user != null) {
-    // Retrieve patient ID
-    // String patientId = user.uid;
-    String patientId ='26q6nWwawl2tIxk12Zi1';
+    if (user != null) {
+    //Retrieve patient ID
+    String patientId = user.uid;
+    // String patientId ='26q6nWwawl2tIxk12Zi1';
 
     // Fetch patient data from Firestore
     DocumentSnapshot<Map<String, dynamic>> patientSnapshot =
         await FirebaseFirestore.instance
-            .collection('trial_patients')
+            .collection('patients')
             .doc(patientId)
             .get();
 
@@ -179,9 +181,9 @@ class _AppointmentPageState extends State<AppointmentPage> {
     } else {
       throw ('Patient data not found.');
     }
-    // } else {
-    //   throw ('User is not logged in.');
-    // }
+    } else {
+      throw ('User is not logged in.');
+    }
    } catch (error) {
       print('Error confirming appointment: $error');
       _showErrorDialog('Failed to confirm appointment. Please try again.');

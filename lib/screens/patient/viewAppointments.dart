@@ -1,6 +1,6 @@
-
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ViewAppointments extends StatefulWidget {
   @override
@@ -15,15 +15,14 @@ class _ViewAppointmentsScreenState extends State<ViewAppointments> {
   void initState() {
     super.initState();
     // Fetch current logged-in patient ID
-    // User? user = FirebaseAuth.instance.currentUser;
+    User? user = FirebaseAuth.instance.currentUser;
 
-    // if (user != null) {
-    // String currentPatientId = user.uid;
-    currentPatientId = '26q6nWwawl2tIxk12Zi1'; // Replace with actual logic to get current user ID
-    fetchAppointments();
-    // } else {
-    //   throw ('User is not logged in.');
-    // }
+    if (user != null) {
+      currentPatientId = user.uid; // Initialize currentPatientId here
+      fetchAppointments();
+    } else {
+      throw ('User is not logged in.');
+    }
   }
 
   void fetchAppointments() async {

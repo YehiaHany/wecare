@@ -53,7 +53,7 @@ class _DoctorPageState extends State<DoctorPage> {
                   String imageUrl = doctorData['profileImage'] ?? '';
                   String email = doctorData['email'] ?? '';
                   String phoneNumber = doctorData['phonenumber'] ?? '';
-                  List<dynamic> workingPlaces =
+                  var workingPlaces =
                       doctorData['workingPlaces'] ?? '';
 
                   return Column(
