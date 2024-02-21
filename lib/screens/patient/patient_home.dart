@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:wecare/screens/patient/patient_firebase_functions.dart';
+
+import '../home/home.dart';
+import '../loading/loading.dart';
 
 
 class PatientHome extends StatefulWidget {
@@ -125,6 +129,7 @@ class _PatientHomeState extends State<PatientHome> {
               appBar: AppBar(
                   backgroundColor: Colors.blue,
                   foregroundColor: Colors.white,
+                  automaticallyImplyLeading: false,
                   title: const Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
@@ -187,7 +192,18 @@ class _PatientHomeState extends State<PatientHome> {
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                           child: IconButton(
-                            onPressed: () {},
+                            onPressed: () async {
+                              GoogleSignIn googleSignIn = GoogleSignIn();
+                              googleSignIn.disconnect();
+                              await FirebaseAuth.instance.signOut();
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                    LoadingPage(destinationPage: const Home()),
+                                  ),
+                              );
+                            },
                             icon: Icon(Icons.logout),
                             color: Colors.white,
                           ),

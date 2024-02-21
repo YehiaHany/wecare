@@ -26,14 +26,11 @@ class _P_PatientProfileState extends State<P_PatientProfile> {
   void showEditInfoForm(BuildContext context) {
 
     final TextEditingController nameController = TextEditingController();
-    final TextEditingController lastNameController = TextEditingController();
     final TextEditingController ageController = TextEditingController();
-    final TextEditingController emailController = TextEditingController();
     final TextEditingController phoneNumberController = TextEditingController();
 
     nameController.text = patient_info['username'];
     ageController.text = patient_info['age'].toString();
-    emailController.text = patient_info['email'];
     phoneNumberController.text = patient_info['phonenumber'];
 
     showDialog(
@@ -54,10 +51,6 @@ class _P_PatientProfileState extends State<P_PatientProfile> {
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Age'),
                       controller: ageController,
-                    ),
-                    TextFormField(
-                      decoration: InputDecoration(labelText: 'Email'),
-                      controller: emailController,
                     ),
                     TextFormField(
                       decoration: InputDecoration(labelText: 'Phone Number'),
