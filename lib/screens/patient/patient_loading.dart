@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
-import 'package:source_span/source_span.dart';
-
+import 'package:wecare/screens/patient/patient_firebase_functions.dart';
 class PatientLoading extends StatefulWidget {
   const PatientLoading({super.key});
 
@@ -11,35 +10,11 @@ class PatientLoading extends StatefulWidget {
 
 class _PatientLoadingState extends State<PatientLoading> {
 
+  FirebaseInterface F = new FirebaseInterface();
+
   void getPatientInfo() async{
-    Map patient_info = await Future.delayed(Duration(seconds: 10), () {
-      return {
-        'age': 22,
-        'email': "moneim@yahoo.com",
-        'gender': 'male',
-        'first_name': 'harry',
-        'last_name': 'potter',
-        'password': '123456',
-        'phone_number': '0123456789',
-        'medical_history': [
-          {
-            'symptoms': ['Fever', 'cough', 'fatigue'],
-            'diagnosis': 'Influenza',
-            'date': 'January 15, 2023',
-          },
-          {
-            'symptoms': ['Headache', 'sore throat', 'muscle aches'],
-            'diagnosis': 'Common cold',
-            'date': 'March 5, 2023',
-          },
-          {
-            'symptoms': ['Shortness of breath', 'chest pain', 'cough'],
-            'diagnosis': 'Pneumonia',
-            'date': 'April 20, 2023',
-          },
-        ]
-      };
-    });
+
+    Map patient_info = await F.getPatientInfo('26q6nWwawl2tIxk12Zi1');
 
     Navigator.pushReplacementNamed(context, '/home', arguments: {
       'age': patient_info['age'],
@@ -47,9 +22,9 @@ class _PatientLoadingState extends State<PatientLoading> {
       'gender': patient_info['gender'],
       'first_name': patient_info['first_name'],
       'last_name': patient_info['last_name'],
-      'password': patient_info['password'],
       'phone_number': patient_info['phone_number'],
       'medical_history': patient_info['medical_history'],
+      'meds': patient_info['meds'],
     });
   }
 

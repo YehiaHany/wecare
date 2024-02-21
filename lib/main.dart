@@ -3,8 +3,18 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:wecare/screens/doctor/view_patient_profile.dart';
 import 'package:wecare/screens/home/home.dart';
 import 'package:wecare/screens/doctor/mainPageDoc.dart';
+import 'package:wecare/screens/patient/appointments.dart';
+import 'package:wecare/screens/patient/bookappointment.dart';
+import 'package:wecare/screens/patient/chat_page.dart';
+import 'package:wecare/screens/patient/messenger_page.dart';
+import 'package:wecare/screens/patient/patient_additional_info.dart';
+import 'package:wecare/screens/patient/patient_home.dart';
+import 'package:wecare/screens/patient/patient_profile.dart';
+import 'package:wecare/screens/patient/search.dart';
+import 'package:wecare/screens/patient/viewAppointments.dart';
 // import 'package:wecare/screens/doctor/doctorpage.dart';
 import 'firebase_options.dart';
 
@@ -41,10 +51,23 @@ class _MyAppState extends State<MyApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
+
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue[900]!)),
       home: FirebaseAuth.instance.currentUser == null
           ? Home()
           : MainDocPage(userId: FirebaseAuth.instance.currentUser!.uid),
+      routes: {
+        '/pateintAdditionalInfo': (context) => PatientAdditionalInfo(),
+        '/patientHome': (context) => PatientHome(),
+        '/profile': (context) => P_PatientProfile(),
+        '/messenger': (context) => MessengerPage(),
+        '/chat': (context) => ChatPage(),
+        '/appointments': (context) => Appointments(),
+        '/bookappointment': (context) => AppointmentPage(doctorId: ''),
+        '/viewAppointments': (context) => ViewAppointments(),
+        '/searchBySpeciality':(context) => DoctorSearchPage(),
+      },
     );
+
   }
 }

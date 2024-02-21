@@ -198,7 +198,9 @@ class _SignInPageState extends State<SignInPage> {
                                                 ),
                                               ),
                                             )
-                                          : 'patients';
+                                          : Navigator.pushReplacementNamed(
+                                        context, '/patientHome'
+                                      );
                                     } else {}
                                   } catch (e) {
                                     // ignore: avoid_print

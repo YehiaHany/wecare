@@ -388,7 +388,13 @@ class _SignUpPageState extends State<SignUpPage> {
                                                   DoctorInfo(userId: user!.uid),
                                             ),
                                           )
-                                        : 'patients';
+                                        : Navigator.pushReplacementNamed(context, '/pateintAdditionalInfo', arguments: {
+                                      'age': age,
+                                      'email': email,
+                                      'gender': gender,
+                                      'username': username,
+                                      'phonenumber': phoneNumber,
+                                    });
                                   } else {}
                                 },
                                 style: ElevatedButton.styleFrom(
