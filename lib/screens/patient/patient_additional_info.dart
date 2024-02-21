@@ -11,6 +11,8 @@ class PatientAdditionalInfo extends StatefulWidget {
 
 class _PatientAdditionalInfoState extends State<PatientAdditionalInfo> {
 
+  TextEditingController dreidTextController = TextEditingController();
+
   List medsControllers = [];
   List medsFields = [];
 
@@ -343,6 +345,11 @@ class _PatientAdditionalInfoState extends State<PatientAdditionalInfo> {
                     ],
                   ),
                   Divider(height: 20),
+                  TextFormField(
+                    decoration: InputDecoration(labelText: 'Assigned doctor ID (hard coded)'),
+                    controller: dreidTextController,
+                  ),
+                  SizedBox(height: 20),
                   ElevatedButton(
                       onPressed: () {
                         for(int i=0; i<medsFields.length; i++){
@@ -372,6 +379,7 @@ class _PatientAdditionalInfoState extends State<PatientAdditionalInfo> {
 
                         patientInfo['medical_history'] = medicalHistory;
                         patientInfo['meds'] = meds;
+                        patientInfo['dreid'] = dreidTextController.text;
                         F.updatePatientInfo(patientInfo, patientID);
 
                         Navigator.pushReplacementNamed(context, '/patientHome');
