@@ -88,9 +88,17 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
                     color: Colors.white,
                     shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(10)),
-                    child: ListView(
-                        padding: const EdgeInsets.all(10),
-                        children: snapshot.data!),
+                    child: snapshot.hasData && snapshot.data!.isNotEmpty
+                        ? ListView(
+                      padding: const EdgeInsets.all(10),
+                      children: snapshot.data!,
+                    )
+                        : Center(
+                      child: Text(
+                        'No data to display',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
                   ),
                 ),
               );
