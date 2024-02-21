@@ -34,8 +34,9 @@ class _DoctorPageState extends State<DoctorPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.blue.shade700,
         elevation: 0,
+        leading: Text('')
       ),
       body: SingleChildScrollView(
         scrollDirection: Axis.vertical,
