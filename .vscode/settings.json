@@ -1,3 +1,4 @@
 {
-    "cmake.sourceDirectory": "D:/programming/flutter/wecare/windows/runner"
+    "cmake.sourceDirectory": "D:/programming/flutter/wecare/windows/runner",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }

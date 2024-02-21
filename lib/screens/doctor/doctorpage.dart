@@ -13,7 +13,7 @@ class DoctorPage extends StatefulWidget {
 
 class _DoctorPageState extends State<DoctorPage> {
   late Stream<DocumentSnapshot<Map<String, dynamic>>> _doctorInfoStream;
-  bool isOldPatient = false;
+  // bool isOldPatient = false;
   @override
   void initState() {
     super.initState();
@@ -53,8 +53,7 @@ class _DoctorPageState extends State<DoctorPage> {
                   String imageUrl = doctorData['profileImage'] ?? '';
                   String email = doctorData['email'] ?? '';
                   String phoneNumber = doctorData['phonenumber'] ?? '';
-                  var workingPlaces =
-                      doctorData['workingPlaces'] ?? '';
+                  var workingPlaces = doctorData['workingPlaces'] ?? '';
 
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -66,25 +65,10 @@ class _DoctorPageState extends State<DoctorPage> {
                             height: 250,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(25),
-                              color: Colors.grey.shade500,
+                              color: Colors.blue[700],
                             ),
                             child: const Center(
                               child: Text(''),
-                            ),
-                          ),
-                          Positioned(
-                            top: 10,
-                            left: 10,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                doctorName,
-                                style: GoogleFonts.raleway(
-                                  color: Colors.white,
-                                  fontSize: 30,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
                             ),
                           ),
                           Positioned(
@@ -95,37 +79,59 @@ class _DoctorPageState extends State<DoctorPage> {
                                     imageUrl,
                                     width: 270,
                                     height: 270,
-                                    fit: BoxFit.cover,
+                                    fit: BoxFit.fitHeight,
                                   )
                                 : const SizedBox(),
+                          ),
+                          Positioned(
+                            top: 10,
+                            left: 10,
+                            child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.blue[900],
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                padding: const EdgeInsets.all(8),
+                                child: Text(
+                                  doctorName,
+                                  style: GoogleFonts.raleway(
+                                    color: Colors.white,
+                                    fontSize: 30,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 16),
                       const SizedBox(height: 16),
-                      Container(
-                        alignment: Alignment.center,
-                        child: SlidingSwitch(
-                          value: isOldPatient,
-                          width: MediaQuery.of(context).size.width - 31,
-                          onChanged: (bool value) {
-                            setState(() {
-                              isOldPatient = value;
-                            });
-                          },
-                          height: 90,
-                          onTap: () {},
-                          onDoubleTap: () {},
-                          onSwipe: () {},
-                          textOff: "Available Patients",
-                          textOn: "Old Patients",
-                          colorOn: Colors.white,
-                          colorOff: Colors.white,
-                          background: Colors.grey.shade300,
-                          buttonColor: Colors.blue.shade900,
-                          inactiveColor: const Color(0xff636f7b),
-                        ),
-                      ),
+                      // Container(
+                      //   alignment: Alignment.center,
+                      //   child: SlidingSwitch(
+                      //     value: isOldPatient,
+                      //     width: MediaQuery.of(context).size.width - 31,
+                      //     onChanged: (bool value) {
+                      //       setState(() {
+                      //         isOldPatient = value;
+                      //       });
+                      //     },
+                      //     height: 90,
+                      //     onTap: () {},
+                      //     onDoubleTap: () {},
+                      //     onSwipe: () {},
+                      //     textOff: "Available Patients",
+                      //     textOn: "Old Patients",
+                      //     colorOn: Colors.white,
+                      //     colorOff: Colors.white,
+                      //     background: Colors.grey.shade300,
+                      //     buttonColor: Colors.blue.shade900,
+                      //     inactiveColor: const Color(0xff636f7b),
+                      //   ),
+                      // ),
                       const SizedBox(height: 16),
                       const SizedBox(height: 16),
                       Card(
@@ -191,6 +197,4 @@ class _DoctorPageState extends State<DoctorPage> {
       ),
     );
   }
-
-  
 }
