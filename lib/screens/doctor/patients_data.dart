@@ -31,19 +31,7 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
   buildPatients() async {
     List<Widget> temp = [];
     await getData();
-    temp.add(InkWell(
-      onTap: () {
-        print('you pressed on the dummy tile');
-      },
-      child: ListTile(
-        textColor: Colors.white,
-        tileColor: Colors.blue[900],
-        title: const Text("username"),
-        subtitle: const Text("gender"),
-        // leading: const Text("phone"),
-        trailing: const Text("age"),
-      ),
-    ));
+
     data.forEach((datai) {
       temp.add(Container(
         margin: const EdgeInsets.only(top: 10),
@@ -82,31 +70,41 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
       //   foregroundColor: Theme.of(context).colorScheme.background,
       //   title: const Text("Patients data"),
       // ),
-      body: FutureBuilder<dynamic>(
-        future: patients,
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator();
-          } else if (snapshot.hasError) {
-            return Text('Error: ${snapshot.error}');
-          } else {
-            return SafeArea(
-              child: Container(
-                color: Colors.blue[150],
-                margin: const EdgeInsets.fromLTRB(5, 5, 5, 20),
-                child: Card(
-                  elevation: 10,
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10)),
-                  child: ListView(
+      body: Center(
+        child: FutureBuilder<dynamic>(
+          future: patients,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator();
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              return SafeArea(
+                child: Container(
+                  color: Colors.blue[150],
+                  margin: const EdgeInsets.fromLTRB(5, 5, 5, 20),
+                  child: Card(
+                    elevation: 10,
+                    color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10)),
+                    child: snapshot.hasData && snapshot.data!.isNotEmpty
+                        ? ListView(
                       padding: const EdgeInsets.all(10),
-                      children: snapshot.data!),
+                      children: snapshot.data!,
+                    )
+                        : Center(
+                      child: Text(
+                        'No data to display',
+                        style: TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
-            );
-          }
-        },
+              );
+            }
+          },
+        ),
       ),
       // body: ListView(padding: const EdgeInsets.all(10), children: patients),
 

@@ -31,7 +31,7 @@ class _MainDocPageState extends State<MainDocPage> {
     ];
     return Scaffold(
       bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.blue.shade900,
+        color: Colors.blue.shade700,
         backgroundColor: Colors.white,
         height: 50,
         animationDuration: const Duration(milliseconds: 200),
