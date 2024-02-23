@@ -53,9 +53,10 @@ class _MyAppState extends State<MyApp> {
       theme: ThemeData(
 
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue[900]!)),
-      home: FirebaseAuth.instance.currentUser == null
-          ? Home()
-          : MainDocPage(userId: FirebaseAuth.instance.currentUser!.uid),
+      home: Home(),
+      // home: FirebaseAuth.instance.currentUser == null
+      //     ? Home()
+      //     : MainDocPage(userId: FirebaseAuth.instance.currentUser!.uid),
       routes: {
         '/pateintAdditionalInfo': (context) => PatientAdditionalInfo(),
         '/patientHome': (context) => PatientHome(),

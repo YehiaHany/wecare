@@ -3,7 +3,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:wecare/screens/doctor/view_patient_profile.dart';
+
+import '../signin/signin.dart';
 
 class PatientsDataPage extends StatefulWidget {
   const PatientsDataPage({super.key, required this.dr});
@@ -31,8 +34,25 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
   buildPatients() async {
     List<Widget> temp = [];
     await getData();
+    String capitalize(String input) {
+      if (input == null || input.isEmpty) {
+        return input;
+      }
+
+      List<String> words = input.split(" ");
+      for (int i = 0; i < words.length; i++) {
+        if (words[i].isNotEmpty) {
+          words[i] = words[i][0].toUpperCase() + words[i].substring(1);
+        }
+      }
+
+      return words.join(" ");
+    }
 
     data.forEach((datai) {
+      String username = datai["username"];
+      username = capitalize(username);
+      String imageUrl = datai['profileImage'];
       temp.add(Container(
         margin: const EdgeInsets.only(top: 10),
         child: InkWell(
@@ -44,11 +64,45 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
           child: ListTile(
             shape:
                 RoundedRectangleBorder(borderRadius: BorderRadius.circular(5)),
-            tileColor: Theme.of(context).primaryColorLight,
-            title: Text("${datai["username"]}"),
-            subtitle: Text("${datai["gender"]}"),
-            leading: Text("${datai["phonenumber"]}"),
-            trailing: Text("${datai["age"]}"),
+            tileColor: Colors.blue.shade700,
+            title: Center(child: Text("${username}",style: TextStyle(color: Colors.white),)),
+            // title: Text("${datai["phonenumber"]}"),
+            // subtitle: Text("${datai["gender"]}"),
+            // leading: Text("${datai["username"]}",style: TextStyle(fontSize: 15),),
+            leading:imageUrl.isNotEmpty
+                ? CircleAvatar(
+              backgroundColor: Colors.white,
+              radius: 29,
+              backgroundImage: NetworkImage(imageUrl), // Replace with your image URL
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                ),
+              ),
+            )
+
+                : const CircleAvatar(
+            radius: 30,
+            backgroundColor: Colors.black,
+            child: Icon(
+              Icons.person,
+              size: 20,
+              color: Colors.white,
+            ),
+          ),
+            trailing:GestureDetector(
+              onTap: (){
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    // ignore: prefer_const_constructors
+                    builder: (context) => SignInPage(),
+                  ),
+                );
+              },
+              child: Icon(FontAwesomeIcons.signalMessenger,color: Colors.white,),
+            ),
+            // trailing:Text("${datai["age"]}"),
           ),
         ),
       ));
@@ -82,12 +136,12 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
               return SafeArea(
                 child: Container(
                   color: Colors.blue[150],
-                  margin: const EdgeInsets.fromLTRB(5, 5, 5, 20),
+                  margin: const EdgeInsets.fromLTRB(16, 16, 16, 16),
                   child: Card(
-                    elevation: 10,
-                    color: Colors.white,
+                    elevation: 20,
+                    color: Colors.grey.shade200,
                     shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(30)),
                     child: snapshot.hasData && snapshot.data!.isNotEmpty
                         ? ListView(
                       padding: const EdgeInsets.all(10),
