@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -39,98 +41,140 @@ class FirebaseInterface {
     }
   }
 
-  Future<List> getChatContacts(String patient_id) async{
-    CollectionReference contacts = FirebaseFirestore.instance.collection('messages');
+  Future<Map> getContactsForPatient(String patientID) async{
+    Map patientInfo = await getPatientInfo(patientID);
+    String doctorID = patientInfo['dreid'];
+
+    Map contact = {};
+
     CollectionReference doctors = FirebaseFirestore.instance.collection('doctors');
-
     try {
-      QuerySnapshot querySnapshot = await contacts.where('patient_id', isEqualTo: patient_id).get();
-      List doctors_id = [];
+      DocumentSnapshot snapshot = await doctors.doc(doctorID).get();
+      Map doctorData = snapshot.data() as Map<String, dynamic>;
 
-      List<Map<String, dynamic>> contact_list = [];
-      querySnapshot.docs.forEach((doc) {
-        if (doc.exists) {
-          contact_list.add(doc.data() as Map<String, dynamic>);
-          doctors_id.add(contact_list.last['doctor_id']);
-        }
-      });
+      contact['doctor_name'] = doctorData['username'];
+      contact['doctor_image_url'] = doctorData['profileImage'];
+    }
+    catch (e) {
+      print("Error getting doctor data to create messenger contact: $e");
+    }
 
-      for (int i = 0; i < doctors_id.length; i++) {
-        try {
-          DocumentSnapshot snapshot = await doctors.doc(doctors_id[i]).get();
-          Map doctor_data = snapshot.data() as Map<String, dynamic>;
+    // searching firebase messages collection for contact
+    CollectionReference messages = FirebaseFirestore.instance.collection('messages');
+    try {
+      QuerySnapshot querySnapshot = await messages
+          .where('patient_id', isEqualTo: patientID)
+          .where('doctor_id', isEqualTo: doctorID)
+          .get();
 
-          contact_list[i]['first_name'] = doctor_data['username'];
-          contact_list[i]['last_name'] = doctor_data['username'];
-          contact_list[i]['image_url'] = doctor_data['profileImage'];
-        }
-        catch (e) {
-          print("Error related contact data: $e");
-          contact_list[i]['first_name'] = '';
-          contact_list[i]['last_name'] = '';
-          contact_list[i]['image_url'] = '';
-        }
+      List<QueryDocumentSnapshot> documents = querySnapshot.docs;
+
+      if(documents.length == 0){
+        var random = Random();
+        String randomId = DateTime.now().millisecondsSinceEpoch.toString() + random.nextInt(9999).toString();
+        await messages.doc(randomId).set({
+          'doctor_id': doctorID,
+          'patient_id': patientID,
+          'messages': [],
+        });
+        contact['chat_id'] = randomId;
+        contact['last_sender'] = '';
+        contact['last_message'] = 'Start a conversation';
+      }
+      else{
+        documents.forEach((doc) {
+          contact['chat_id'] = doc.id;
+          Map chatDocument = doc.data() as Map<String, dynamic>;
+          contact['last_sender'] = chatDocument['messages'].length > 0 ? chatDocument['messages'].last['sender'] : '';
+          contact['last_message'] = chatDocument['messages'].length > 0 ? chatDocument['messages'].last['content'] : 'Start a conversation';
+        });
       }
 
-      return contact_list;
     } catch (e) {
-      print("Error fetching contacts data: $e");
-      return [];
+      print("Error fetching messages from Firebase: $e");
+    }
+
+    return contact;
+  }
+
+  Future<Map> messagesOfSpecificContactForPatient(String chatID) async {
+    CollectionReference messages = FirebaseFirestore.instance.collection(
+        'messages');
+
+    try {
+      DocumentSnapshot snapshot = await messages.doc(chatID).get();
+
+      if (!snapshot.exists) {
+        return {};
+      }
+
+      return snapshot.data() as Map<String, dynamic>;
+    }
+    catch (e) {
+      print("Error fetching patient data: $e");
+      return {};
     }
   }
 
-  Future<Map<String, dynamic>>  getMessagesFromFirebase(String patient_id, String doctor_id) async {
+  Future<List> messagesOfSpecificContactForDoctor(String patientID, String doctorID) async {
+
     CollectionReference messages = FirebaseFirestore.instance.collection('messages');
     String chatID = '';
 
     try {
       QuerySnapshot querySnapshot = await messages
-          .where('patient_id', isEqualTo: patient_id)
-          .where('doctor_id', isEqualTo: doctor_id)
+          .where('patient_id', isEqualTo: patientID)
+          .where('doctor_id', isEqualTo: doctorID)
           .get();
 
-      // Extract data from QuerySnapshot
       List<QueryDocumentSnapshot> documents = querySnapshot.docs;
-      List<Map<String, dynamic>> dataList = [];
 
-      // Extracting data from each document
-      documents.forEach((doc) {
-        chatID = doc.id;
-        dataList.add(doc.data() as Map<String, dynamic>);
-      });
-
-      dataList[0]['chat_id'] = chatID;
-      return dataList[0];
+      if(documents.length == 0){
+        var random = Random();
+        String randomId = DateTime.now().millisecondsSinceEpoch.toString() + random.nextInt(9999).toString();
+        await messages.doc(randomId).set({
+          'doctor_id': doctorID,
+          'patient_id': patientID,
+          'messages': [],
+        });
+        chatID = randomId;
+      }
+      else{
+        documents.forEach((doc) {
+          chatID = doc.id;
+        });
+      }
     } catch (e) {
       print("Error fetching messages from Firebase: $e");
-      return {};
     }
-  }
 
-  Future<void> updateMessages(String patient_id, String doctor_id, String chat_id, List<types.TextMessage> updated_messages) async{
-    CollectionReference messages = FirebaseFirestore.instance.collection('messages');
-    Map <String, dynamic> updated_data = {};
-    List messages_list = [];
+    List returnedData = [];
+    returnedData.add(chatID);
 
-    updated_data['patient_id'] = patient_id;
-    updated_data['doctor_id'] = doctor_id;
-
-    for(int i=0; i<updated_messages.length; i--){
-      Map single_message = {
-        'content': updated_messages[i].text,
-        'sender': updated_messages[i].author.id == patient_id ? 'patient': 'doctor',
-      };
-
-      messages_list.add(single_message);
-    }
-    updated_data['messages'] = messages_list;
-
-    print(updated_data);
     try {
-      await messages.doc(chat_id).update(updated_data);
-      print("messages data updated successfully.");
-    } catch (error) {
-      print("Failed to update messages data: $error");
+      DocumentSnapshot snapshot = await messages.doc(chatID).get();
+
+      if (!snapshot.exists) {
+        return [];
+      }
+
+      returnedData.add(snapshot.data() as Map<String, dynamic>);
+      return returnedData;
+    }
+    catch (e) {
+      print("Error fetching patient data: $e");
+      return [];
     }
   }
+
+  Future<void> updateContactMessages(Map<String, dynamic> new_data, String chatID) async{
+    CollectionReference messages = FirebaseFirestore.instance.collection('messages');
+
+    try {
+      await messages.doc(chatID).update(new_data);
+    } catch (error) {
+      print("Failed to send message: $error");
+    }
+  }
+
 }

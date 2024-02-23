@@ -183,7 +183,7 @@ class _PatientHomeState extends State<PatientHome> {
                           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                           child: IconButton(
                             onPressed: () {
-                              Navigator.pushNamed(context, '/messenger', arguments: {});
+                              Navigator.pushNamed(context, '/p_messenger', arguments: {});
                             },
                             icon: Icon(Icons.mail),
                             color: Colors.white,

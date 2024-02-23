@@ -3,13 +3,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:wecare/screens/doctor/components/doctor_chat_page.dart';
 import 'package:wecare/screens/doctor/view_patient_profile.dart';
 import 'package:wecare/screens/home/home.dart';
 import 'package:wecare/screens/doctor/mainPageDoc.dart';
 import 'package:wecare/screens/patient/appointments.dart';
 import 'package:wecare/screens/patient/bookappointment.dart';
-import 'package:wecare/screens/patient/chat_page.dart';
-import 'package:wecare/screens/patient/messenger_page.dart';
+import 'package:wecare/screens/patient/patient_chat_page.dart';
+import 'package:wecare/screens/patient/patient_messenger_page.dart';
 import 'package:wecare/screens/patient/patient_additional_info.dart';
 import 'package:wecare/screens/patient/patient_home.dart';
 import 'package:wecare/screens/patient/patient_profile.dart';
@@ -61,8 +62,9 @@ class _MyAppState extends State<MyApp> {
         '/pateintAdditionalInfo': (context) => PatientAdditionalInfo(),
         '/patientHome': (context) => PatientHome(),
         '/profile': (context) => P_PatientProfile(),
-        '/messenger': (context) => MessengerPage(),
-        '/chat': (context) => ChatPage(),
+        '/p_messenger': (context) => PatientMessengerPage(),
+        '/p_chat': (context) => PatientChatPage(),
+        '/d_chat': (context) => DoctorChatPage(),
         '/appointments': (context) => Appointments(),
         '/bookappointment': (context) => AppointmentPage(doctorId: ''),
         '/viewAppointments': (context) => ViewAppointments(),

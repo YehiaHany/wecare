@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:wecare/screens/doctor/components/doctor_chat_page.dart';
 import 'package:wecare/screens/doctor/view_patient_profile.dart';
 
 import '../signin/signin.dart';
@@ -92,12 +93,11 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
           ),
             trailing:GestureDetector(
               onTap: (){
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    // ignore: prefer_const_constructors
-                    builder: (context) => SignInPage(),
-                  ),
+                Navigator.pushNamed(context, '/d_chat', arguments: {
+                    'patient_id': datai.id,
+                    'doctor_id': widget.dr,
+                    'patient_name': username,
+                  }
                 );
               },
               child: Icon(FontAwesomeIcons.signalMessenger,color: Colors.white,),

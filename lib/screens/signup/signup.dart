@@ -224,7 +224,7 @@ class _SignUpPageState extends State<SignUpPage> {
                                   });
                                 },
                                 items:
-                                    ['Select Gender', 'Male', 'Female', 'Other']
+                                    ['Select Gender', 'Male', 'Female']
                                         .map<DropdownMenuItem<String>>(
                                           (String value) =>
                                               DropdownMenuItem<String>(
