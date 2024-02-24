@@ -357,6 +357,7 @@ class _PatientAdditionalInfoState extends State<PatientAdditionalInfo> {
                             'dose': medsControllers[i]['dose_controller'].text,
                             'name': medsControllers[i]['name_controller'].text,
                             'times': medsControllers[i]['times_controller'].text,
+                            'alarm_set' : false,
                           };
 
                           meds.add(medsEntry);
@@ -389,7 +390,7 @@ class _PatientAdditionalInfoState extends State<PatientAdditionalInfo> {
                         child: Text(
                           'Submit',
                           style: TextStyle(
-                            fontSize: 30,
+                            fontSize: 28,
                           ),
                         ),
                       ),

@@ -32,7 +32,6 @@ class _DoctorChatPageState extends State<DoctorChatPage> {
     chatID = retrievedData[0];
     retrievedMessagesData = retrievedData[1];
     messages = retrievedMessagesData['messages'];
-    print(messages);
     return retrievedMessagesData;
   }
 

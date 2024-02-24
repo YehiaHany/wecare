@@ -29,88 +29,140 @@ class _PatientHomeState extends State<PatientHome> {
   }
 
   Widget medicationCardTemplate(medication){
+
     return Card(
-      margin: EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
+      margin: EdgeInsets.all(8.0),
       child: Padding(
         padding: const EdgeInsets.all(12.0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Name: ',
+                      'Name',
                       style: TextStyle(
                         color: Colors.grey[800],
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       medication['name'],
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                       ),
+                    ),
+                    Container(
+                      color: Colors.grey[600],
+                      width: 200,
+                      height: 1.5,
                     ),
                   ],
                 ),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Dosage: ',
+                      'Dosage',
                       style: TextStyle(
                         color: Colors.grey[800],
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       medication['dose'],
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                       ),
+                    ),
+                    Container(
+                      color: Colors.grey[600],
+                      width: 200,
+                      height: 1.5,
                     ),
                   ],
                 ),
-                Row(
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Times: ',
+                      'Times',
                       style: TextStyle(
                         color: Colors.grey[800],
-                        fontSize: 18,
+                        fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
                     Text(
                       medication['times'],
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                       ),
                     ),
                   ],
                 )
               ],
             ),
-            ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10), // Adjust the value to change the button's corner radius
+            Column(
+              children: [
+                Container(
+                  width: 110,
+                  height: 87,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      medication['alarm_set'] = !medication['alarm_set'];
+                      patient_info['meds'] = medications;
+                      F.updatePatientInfo(patient_info as Map<String, dynamic>, patientID);
+                      setState(() {});
+                    },
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Adjust the value to change the button's corner radius
+                      ),
+                      backgroundColor: medication['alarm_set'] ? Colors.red[400] : Colors.green[400],
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.alarm),
+                        Text(medication['alarm_set'] ? 'Remove' : 'Set'),
+                        Text('Alarm'),
+                      ],
+                    ),
+                  ),
                 ),
-                backgroundColor: Colors.red[400],
-                foregroundColor: Colors.white,
-              ),
-              child: Column(
-                children: [
-                  Icon(Icons.alarm),
-                  Text('Set'),
-                  Text('Alarm'),
-                ],
-              ),
+                SizedBox(height: 10),
+                Container(
+                  width: 110,
+                  height: 87,
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    style: ElevatedButton.styleFrom(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10), // Adjust the value to change the button's corner radius
+                      ),
+                      backgroundColor: Colors.blue[400],
+                      foregroundColor: Colors.white,
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(Icons.search),
+                        Text('View'),
+                        Text('Pamphlet'),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
             )
           ],
         ),
@@ -146,98 +198,95 @@ class _PatientHomeState extends State<PatientHome> {
                     ],
                   )
               ),
-              body: Column(
-                children: [
-                  Container(
-                    color: Colors.blue,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/appointments');
-                            },
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                              foregroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-                            ),
-                            child: Text('Appointmnets'),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                          child: TextButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/profile', arguments: patientID);
-                            },
-                            style: const ButtonStyle(
-                              backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
-                              foregroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
-                            ),
-                            child: Text('Profile'),
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                          child: IconButton(
-                            onPressed: () {
-                              Navigator.pushNamed(context, '/p_messenger', arguments: {});
-                            },
-                            icon: Icon(Icons.mail),
-                            color: Colors.white,
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                          child: IconButton(
-                            onPressed: () async {
-                              GoogleSignIn googleSignIn = GoogleSignIn();
-                              googleSignIn.disconnect();
-                              await FirebaseAuth.instance.signOut();
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                    LoadingPage(destinationPage: const Home()),
-                                  ),
-                              );
-                            },
-                            icon: Icon(Icons.logout),
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(height: 40),
-                  Container(
-                    width: 380,
-                    height: 470,
-                    child: Card(
+              body: Scrollbar(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      Container(
                         color: Colors.blue,
-                        child: Scrollbar(
-                          child: SingleChildScrollView(
-                            child: Column(
-                              children: [
-                                const Text(
-                                  'Medications',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 30,
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/appointments');
+                                },
+                                style: const ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+                                  foregroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
                                 ),
-                                Column(
-                                  children: medications.map((medication) => medicationCardTemplate(medication)).toList(),)
-                              ],
+                                child: Text('Appointmnets'),
+                              ),
                             ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                              child: TextButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/profile', arguments: patientID);
+                                },
+                                style: const ButtonStyle(
+                                  backgroundColor: MaterialStatePropertyAll<Color>(Colors.white),
+                                  foregroundColor: MaterialStatePropertyAll<Color>(Colors.blue),
+                                ),
+                                child: Text('Profile'),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                              child: IconButton(
+                                onPressed: () {
+                                  Navigator.pushNamed(context, '/p_messenger', arguments: {});
+                                },
+                                icon: Icon(Icons.mail),
+                                color: Colors.white,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                              child: IconButton(
+                                onPressed: () async {
+                                  GoogleSignIn googleSignIn = GoogleSignIn();
+                                  googleSignIn.disconnect();
+                                  await FirebaseAuth.instance.signOut();
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                        LoadingPage(destinationPage: const Home()),
+                                      ),
+                                  );
+                                },
+                                icon: Icon(Icons.logout),
+                                color: Colors.white,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(height: 10),
+                      Scrollbar(
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                               Text(
+                                'Medications',
+                                style: TextStyle(
+                                  color: Colors.grey[800],
+                                  fontSize: 30,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Column(
+                                children: medications.map((medication) => medicationCardTemplate(medication)).toList(),)
+                            ],
                           ),
-                        )
-                    ),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
             );
           } else {
