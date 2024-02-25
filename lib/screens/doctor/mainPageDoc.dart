@@ -30,24 +30,39 @@ class _MainDocPageState extends State<MainDocPage> {
       LogOut(),
     ];
     return Scaffold(
-      bottomNavigationBar: CurvedNavigationBar(
-        color: Colors.blue.shade700,
-        backgroundColor: Colors.white,
-        height: 50,
-        animationDuration: const Duration(milliseconds: 200),
-        items: const [
-          Icon(Icons.home, size: 30, color: Colors.white),
-          Icon(Icons.medical_information_rounded,
-              size: 30, color: Colors.white),
-          Icon(FontAwesomeIcons.userDoctor, size: 30, color: Colors.white),
-        ],
-        onTap: (index) {
-          setState(() {
-            _pageIndex = index;
-          });
-        },
-      ),
-      body: _pages[_pageIndex],
+      // bottomNavigationBar: Padding(
+      //   padding: const EdgeInsets.only(left: 16,right: 16),
+      //   child: Container(
+      //     height: 45,
+      //     decoration: BoxDecoration(
+      //       border: Border.all(
+      //         color: Colors.blue.shade800, // Set the border color to blue
+      //         width: 1.0, // Set the border width
+      //       ),
+      //       color: Colors.blue.shade800,
+      //       borderRadius: BorderRadius.only(
+      //         topLeft: Radius.circular(50),
+      //         bottomRight: Radius.circular(50)
+      //       ),
+      //     ),
+      //     child: Row(children: [
+      //        Padding(
+      //          padding: EdgeInsets.only(left: 15.0),
+      //          child: GestureDetector(
+      //            child: Container(
+      //              decoration: BoxDecoration(
+      //                borderRadius: BorderRadius.circular(50),
+      //                color: Colors.white,
+      //              ),
+      //
+      //                child: Center(child: Icon(Icons.home,color: Colors.blue.shade800,size: 40,))),
+      //          ),
+      //        )
+      //     ],),
+      //   ),
+      // ),
+      // body: _pages[_pageIndex],
+        body: DoctorPage(userId: widget.userId)
     );
   }
 }

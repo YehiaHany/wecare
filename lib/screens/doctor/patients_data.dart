@@ -119,11 +119,11 @@ class _PatientsDataPageState extends State<PatientsDataPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   backgroundColor: Theme.of(context).colorScheme.primary,
-      //   foregroundColor: Theme.of(context).colorScheme.background,
-      //   title: const Text("Patients data"),
-      // ),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        foregroundColor: Theme.of(context).colorScheme.background,
+        title: const Text("Patients data"),
+      ),
       body: Center(
         child: FutureBuilder<dynamic>(
           future: patients,
