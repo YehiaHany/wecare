@@ -135,34 +135,34 @@ class _DoctorPageState extends State<DoctorPage> {
                   crossAxisAlignment: CrossAxisAlignment.stretch,
 
                   children: [
-                    Container(
-                      height: 100,
-                      child: Padding(
-                        padding: EdgeInsets.only(left: 25),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Hi, ${capitalize_First_Name(doctorName)}', style: TextStyle(fontSize: 25, color: Colors.white)),
-                                Text('Welcome Back', style: TextStyle(fontSize: 30, color: Colors.white)),
-                              ],
-                            ),
-                            Spacer(), // Adds space between the text and the image
-                            Image.asset(
-                              'assets/images/doctor6.png', // Replace with the actual path to your asset image
-                              width: 150, // Adjust the width of the image
-                              height: 350, // Adjust the height of the image
-                            ),
-                          ],
+                    SafeArea(
+                      child: Container(
+                        height: 100,
+                        child: Padding(
+                          padding: EdgeInsets.only(left: 25),
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('Hi, ${capitalize_First_Name(doctorName)}', style: TextStyle(fontSize: 25, color: Colors.white)),
+                                  Text('Welcome Back', style: TextStyle(fontSize: 30, color: Colors.white)),
+                                ],
+                              ),
+                             SizedBox(width: 38,),
+                              Image.asset(
+                                'assets/images/doctor6.png',
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.blue.shade800,
-                        borderRadius: BorderRadius.only(
-                          // topLeft: Radius.circular(20.0), // Adjust the radius for rounded corners
-                          // bottomLeft: Radius.circular(100.0), // Adjust the radius for rounded corners
+                        decoration: BoxDecoration(
+                          color: Colors.blue.shade800,
+                          borderRadius: BorderRadius.only(
+                            // topLeft: Radius.circular(20.0),
+                            // bottomLeft: Radius.circular(100.0),
+                          ),
                         ),
                       ),
                     ),
