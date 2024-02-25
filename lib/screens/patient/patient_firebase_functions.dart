@@ -177,4 +177,23 @@ class FirebaseInterface {
     }
   }
 
+  Future<List> getDoctors() async{
+    CollectionReference doctors = FirebaseFirestore.instance.collection('doctors');
+
+    QuerySnapshot querySnapshot = await doctors.get();
+
+    List doctorData = [];
+
+    for(int i=0; i<querySnapshot.docs.length; i++){
+
+      Map indivData = querySnapshot.docs[i].data() as Map;
+
+      doctorData.add({
+        'id': querySnapshot.docs[i].id,
+        'name': indivData['username'],
+      });
+    }
+
+    return doctorData;
+  }
 }

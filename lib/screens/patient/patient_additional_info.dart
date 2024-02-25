@@ -21,11 +21,15 @@ class _PatientAdditionalInfoState extends State<PatientAdditionalInfo> {
 
   List meds = [];
   List medicalHistory = [];
-
+  String selectedDoctorName = '';
+  String selectedDoctorID = '';
+  List doctors = [];
+  List doctorNames = [];
 
   FirebaseInterface F = new FirebaseInterface();
   String patientID = FirebaseAuth.instance.currentUser!.uid;
   Map<String, dynamic> patientInfo = {};
+
 
   void initializeMedsLists() {
     medsControllers = [
@@ -212,8 +216,7 @@ class _PatientAdditionalInfoState extends State<PatientAdditionalInfo> {
     );
   }
 
-  @override
-  Widget build(BuildContext context) {
+  Future<List> initializerFunction() async{
     if(medsFields.isEmpty) {
       initializeMedsLists();
     }
@@ -223,184 +226,247 @@ class _PatientAdditionalInfoState extends State<PatientAdditionalInfo> {
     }
 
     patientInfo = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+    doctors = await F.getDoctors() as List;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Additional info'),
-        foregroundColor: Colors.white,
-        backgroundColor: Colors.blue,
-      ),
-      body: Scrollbar(
-        child: SingleChildScrollView(
-          child: Form(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Column(
-                children: [
-                  Text(
-                    'Insert Medications',
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  generateMedFields(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Map medsControllersNewEntry = {
-                            'dose_controller': TextEditingController(),
-                            'name_controller': TextEditingController(),
-                            'times_controller': TextEditingController(),
-                          };
+    doctorNames.clear();
+    for(int i=0; i<doctors.length; i++){
+      doctorNames.add(doctors[i]['name']);
+    }
 
-                          medsControllers.add(medsControllersNewEntry);
+    if(selectedDoctorName == '') {
+      selectedDoctorName = doctorNames[0];
+    }
 
-                          Map medsFieldsNewEntry = {
-                            'dose_field': TextFormField(
-                              decoration: InputDecoration(labelText: 'Dose'),
-                              controller: medsControllers.last['dose_controller'],
-                            ),
-                            'name_field': TextFormField(
-                              decoration: InputDecoration(labelText: 'Name'),
-                              controller: medsControllers.last['name_controller'],
-                            ),
-                            'times_field': TextFormField(
-                              decoration: InputDecoration(labelText: 'Times'),
-                              controller: medsControllers.last['times_controller'],
-                            ),
-                          };
+    return doctors;
+  }
 
-                          medsFields.add(medsFieldsNewEntry);
-
-                          setState(() {});
-                        },
-                        child: Text('Add medication'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          medsFields.removeLast();
-                          medsControllers.removeLast();
-                          setState(() {});
-                        },
-                        child: Text('Remove last medication'),
-                      ),
-                    ],
-                  ),
-                  Divider(height: 20),
-                  Text(
-                    'Insert Medical History',
-                    style: TextStyle(
-                      color: Colors.grey[800],
-                      fontSize: 32,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  generateMedHistoryFields(),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      ElevatedButton(
-                        onPressed: () {
-                          Map medHistoryControllersNewEntry = {
-                            'symptoms_controllers': [TextEditingController()],
-                            'diagnosis_controller': TextEditingController(),
-                            'date_controller': TextEditingController(),
-                          };
-
-                          medHistoryControllers.add(medHistoryControllersNewEntry);
-
-                          Map medHistoryFieldsNewEntry = {
-                            'symptoms_fields': [TextFormField(
-                              decoration: InputDecoration(labelText: 'Symptom ' + medHistoryControllers.last['symptoms_controllers'].length.toString()),
-                              controller: medHistoryControllers.last['symptoms_controllers'].last,
-                            ),],
-                            'diagnosis_field': TextFormField(
-                              decoration: InputDecoration(labelText: 'Diagnosis'),
-                              controller: medHistoryControllers.last['diagnosis_controller'],
-                            ),
-                            'date_field': TextFormField(
-                              decoration: InputDecoration(labelText: 'Date'),
-                              controller: medHistoryControllers.last['date_controller'],
-                            ),
-                          };
-
-                          medHistoryFields.add(medHistoryFieldsNewEntry);
-
-                          setState(() {});
-                        },
-                        child: Text('Add entry'),
-                      ),
-                      ElevatedButton(
-                        onPressed: () {
-                          medHistoryFields.removeLast();
-                          medHistoryControllers.removeLast();
-                          setState(() {});
-                        },
-                        child: Text('Remove last entry'),
-                      ),
-                    ],
-                  ),
-                  Divider(height: 20),
-                  TextFormField(
-                    decoration: InputDecoration(labelText: 'Assigned doctor ID (hard coded)'),
-                    controller: dreidTextController,
-                  ),
-                  SizedBox(height: 20),
-                  ElevatedButton(
-                      onPressed: () {
-                        for(int i=0; i<medsFields.length; i++){
-                          Map medsEntry = {
-                            'dose': medsControllers[i]['dose_controller'].text,
-                            'name': medsControllers[i]['name_controller'].text,
-                            'times': medsControllers[i]['times_controller'].text,
-                            'alarm_set' : false,
-                          };
-
-                          meds.add(medsEntry);
-                        }
-
-                        for(int i=0; i<medHistoryFields.length; i++){
-                          List entrySymptoms = [];
-                          for(int j=0; j<medHistoryFields[i]['symptoms_fields'].length; j++){
-                            entrySymptoms.add(medHistoryControllers[i]['symptoms_controllers'][j].text);
-                          }
-
-                          Map medHistoryEntry = {
-                            'symptoms': entrySymptoms,
-                            'diagnosis': medHistoryControllers[i]['diagnosis_controller'].text,
-                            'date': medHistoryControllers[i]['date_controller'].text,
-                          };
-
-                          medicalHistory.add(medHistoryEntry);
-                        }
-
-                        patientInfo['medical_history'] = medicalHistory;
-                        patientInfo['meds'] = meds;
-                        patientInfo['dreid'] = dreidTextController.text;
-                        F.updatePatientInfo(patientInfo, patientID);
-
-                        Navigator.pushReplacementNamed(context, '/patientHome');
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 100.0),
-                        child: Text(
-                          'Submit',
-                          style: TextStyle(
-                            fontSize: 28,
-                          ),
-                        ),
-                      ),
-                  )
-                ],
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<List<dynamic>>(
+        future: initializerFunction(),
+        builder: (context, AsyncSnapshot<List<dynamic>> snapshot) {
+          if (snapshot.hasData) {
+            return Scaffold(
+              appBar: AppBar(
+                title: Text('Additional info'),
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.blue,
               ),
-            ),
-            ),
-          ),
-        ),
+              body: Scrollbar(
+                child: SingleChildScrollView(
+                  child: Form(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            'Insert Medications',
+                            style: TextStyle(
+                              color: Colors.grey[800],
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          generateMedFields(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Map medsControllersNewEntry = {
+                                    'dose_controller': TextEditingController(),
+                                    'name_controller': TextEditingController(),
+                                    'times_controller': TextEditingController(),
+                                  };
+
+                                  medsControllers.add(medsControllersNewEntry);
+
+                                  Map medsFieldsNewEntry = {
+                                    'dose_field': TextFormField(
+                                      decoration: InputDecoration(labelText: 'Dose'),
+                                      controller: medsControllers.last['dose_controller'],
+                                    ),
+                                    'name_field': TextFormField(
+                                      decoration: InputDecoration(labelText: 'Name'),
+                                      controller: medsControllers.last['name_controller'],
+                                    ),
+                                    'times_field': TextFormField(
+                                      decoration: InputDecoration(labelText: 'Times'),
+                                      controller: medsControllers.last['times_controller'],
+                                    ),
+                                  };
+
+                                  medsFields.add(medsFieldsNewEntry);
+
+                                  setState(() {});
+                                },
+                                child: Text('Add medication'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  medsFields.removeLast();
+                                  medsControllers.removeLast();
+                                  setState(() {});
+                                },
+                                child: Text('Remove last medication'),
+                              ),
+                            ],
+                          ),
+                          Divider(height: 20),
+                          Text(
+                            'Insert Medical History',
+                            style: TextStyle(
+                              color: Colors.grey[800],
+                              fontSize: 32,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          generateMedHistoryFields(),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              ElevatedButton(
+                                onPressed: () {
+                                  Map medHistoryControllersNewEntry = {
+                                    'symptoms_controllers': [TextEditingController()],
+                                    'diagnosis_controller': TextEditingController(),
+                                    'date_controller': TextEditingController(),
+                                  };
+
+                                  medHistoryControllers.add(medHistoryControllersNewEntry);
+
+                                  Map medHistoryFieldsNewEntry = {
+                                    'symptoms_fields': [TextFormField(
+                                      decoration: InputDecoration(labelText: 'Symptom ' + medHistoryControllers.last['symptoms_controllers'].length.toString()),
+                                      controller: medHistoryControllers.last['symptoms_controllers'].last,
+                                    ),],
+                                    'diagnosis_field': TextFormField(
+                                      decoration: InputDecoration(labelText: 'Diagnosis'),
+                                      controller: medHistoryControllers.last['diagnosis_controller'],
+                                    ),
+                                    'date_field': TextFormField(
+                                      decoration: InputDecoration(labelText: 'Date'),
+                                      controller: medHistoryControllers.last['date_controller'],
+                                    ),
+                                  };
+
+                                  medHistoryFields.add(medHistoryFieldsNewEntry);
+
+                                  setState(() {});
+                                },
+                                child: Text('Add entry'),
+                              ),
+                              ElevatedButton(
+                                onPressed: () {
+                                  medHistoryFields.removeLast();
+                                  medHistoryControllers.removeLast();
+                                  setState(() {});
+                                },
+                                child: Text('Remove last entry'),
+                              ),
+                            ],
+                          ),
+                          Divider(height: 20),
+                          Row(
+                            children: [
+                              Text('Assigned doctor'),
+                              SizedBox(width: 10),
+                              Container(
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 20),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(30),
+                                  border:
+                                  Border.all(color: Colors.black, width: 3),
+                                ),
+                                child: DropdownButton<String>(
+                                  value: selectedDoctorName,
+                                  onChanged: (String? newValue) {
+                                    setState(() {
+                                      selectedDoctorName = newValue!;
+                                    });
+                                  },
+                                  items:
+                                  doctorNames
+                                      .map<DropdownMenuItem<String>>(
+                                        (dynamic value) =>
+                                        DropdownMenuItem<String>(
+                                          value: value,
+                                          child: Text(value),
+                                        ),
+                                  )
+                                      .toList(),
+                                ),
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            onPressed: () {
+                              for(int i=0; i<medsFields.length; i++){
+                                Map medsEntry = {
+                                  'dose': medsControllers[i]['dose_controller'].text,
+                                  'name': medsControllers[i]['name_controller'].text,
+                                  'times': medsControllers[i]['times_controller'].text,
+                                  'alarm_set' : false,
+                                };
+
+                                if(medsEntry[i] != null){
+                                  meds.add(medsEntry);
+                                }
+                              }
+
+                              for(int i=0; i<medHistoryFields.length; i++){
+                                List entrySymptoms = [];
+                                for(int j=0; j<medHistoryFields[i]['symptoms_fields'].length; j++){
+                                  entrySymptoms.add(medHistoryControllers[i]['symptoms_controllers'][j].text);
+                                }
+
+                                Map medHistoryEntry = {
+                                  'symptoms': entrySymptoms,
+                                  'diagnosis': medHistoryControllers[i]['diagnosis_controller'].text,
+                                  'date': medHistoryControllers[i]['date_controller'].text,
+                                };
+
+                                if(medHistoryEntry[i] != null){
+                                  medicalHistory.add(medHistoryEntry);
+                                }
+                              }
+
+                              for(int i=0; i<doctors.length; i++){
+                                if(doctors[i]['name'] == selectedDoctorName){
+                                  selectedDoctorID = doctors[i]['id'];
+                                }
+                              }
+
+                              patientInfo['medical_history'] = medicalHistory;
+                              patientInfo['meds'] = meds;
+                              patientInfo['dreid'] = selectedDoctorID;
+                              F.updatePatientInfo(patientInfo, patientID);
+
+                              Navigator.pushReplacementNamed(context, '/patientHome');
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 100.0),
+                              child: Text(
+                                'Submit',
+                                style: TextStyle(
+                                  fontSize: 28,
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            );;
+          } else {
+            return CircularProgressIndicator();
+          }
+        }
     );
   }
 }
