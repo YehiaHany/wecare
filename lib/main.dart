@@ -1,5 +1,8 @@
 // ignore_for_file: avoid_print, prefer_const_constructors
 
+import 'dart:async';
+import 'package:permission_handler/permission_handler.dart';
+import 'package:alarm/alarm.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,6 +30,7 @@ void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+  await Alarm.init(showDebugLogs: true);
   runApp(const MyApp());
 }
 
@@ -60,8 +64,18 @@ class _MyAppState extends State<MyApp> {
       return Home(); // Return a default page or handle errors as needed
     }
   }
+  Future<void> checkAndroidNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied) {
+      alarmPrint('Requesting notification permission...');
+      final res = await Permission.notification.request();
+      alarmPrint(
+        'Notification permission ${res.isGranted ? '' : 'not '}granted.',
+      );
+    }
+  }
 
-
+  static StreamSubscription<AlarmSettings>? subscription;
   @override
   void initState() {
     FirebaseAuth.instance.authStateChanges().listen((User? user) {
@@ -72,6 +86,9 @@ class _MyAppState extends State<MyApp> {
         checkUserRole(FirebaseAuth.instance.currentUser!.uid);
       }
     });
+    if (Alarm.android) {
+      checkAndroidNotificationPermission();
+    }
     super.initState();
   }
   // BLA BLA

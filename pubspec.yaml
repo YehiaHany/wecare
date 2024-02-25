@@ -53,6 +53,8 @@ dependencies:
   toggle_switch: ^2.1.0
   flutter_launcher_icons: ^0.13.1
   awesome_dialog:
+  alarm: ^3.0.12
+  permission_handler: ^11.3.0
 flutter_icons:
   android: true
   ios: true
@@ -90,6 +92,11 @@ flutter:
     - assets/images/
     - assets/images/Heart3.png
     - assets/images/Heart2.png
+    - assets/mozart.mp3
+    - assets/nokia.mp3
+    - assets/one_piece.mp3
+    - assets/star_wars.mp3
+    - assets/marimba.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

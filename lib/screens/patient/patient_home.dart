@@ -1,8 +1,15 @@
+import 'dart:async';
+
+import 'package:alarm/alarm.dart';
+import 'package:alarm/model/alarm_settings.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:wecare/screens/patient/patient_firebase_functions.dart';
 
+import '../general/ExampleAlarmEditScreen.dart';
+import '../general/Ring.dart';
 import '../home/home.dart';
 import '../loading/loading.dart';
 
@@ -17,6 +24,21 @@ class PatientHome extends StatefulWidget {
 
 class _PatientHomeState extends State<PatientHome> {
 
+  Future<void> navigateToAlarmScreen(AlarmSettings? settings) async {
+    final res = await showModalBottomSheet<bool?>(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10.0),
+        ),
+        builder: (context) {
+          return FractionallySizedBox(
+            heightFactor: 0.75,
+            child: ExampleAlarmEditScreen(alarmSettings: settings),
+          );
+        });
+
+  }
   Map patient_info = {};
   List medications = [];
   FirebaseInterface F = new FirebaseInterface();
@@ -26,6 +48,38 @@ class _PatientHomeState extends State<PatientHome> {
     patient_info = await F.getPatientInfo(patientID);
     medications = patient_info['meds'] ?? [] ;
     return patient_info;
+  }
+  Future<void> checkAndroidNotificationPermission() async {
+    final status = await Permission.notification.status;
+    if (status.isDenied) {
+      alarmPrint('Requesting notification permission...');
+      final res = await Permission.notification.request();
+      alarmPrint(
+        'Notification permission ${res.isGranted ? '' : 'not '}granted.',
+      );
+    }
+  }
+  static StreamSubscription<AlarmSettings>? subscription;
+  Future<void> navigateToRingScreen(AlarmSettings alarmSettings) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) =>
+            ExampleAlarmRingScreen(alarmSettings: alarmSettings),
+      ),
+    );
+
+  }
+  @override
+  void initState() {
+    super.initState();
+    if (Alarm.android) {
+      checkAndroidNotificationPermission();
+    }
+
+    subscription ??= Alarm.ringStream.stream.listen(
+          (alarmSettings) => navigateToRingScreen(alarmSettings),
+    );
   }
 
   Widget medicationCardTemplate(medication){
@@ -120,7 +174,10 @@ class _PatientHomeState extends State<PatientHome> {
                       medication['alarm_set'] = !medication['alarm_set'];
                       patient_info['meds'] = medications;
                       F.updatePatientInfo(patient_info as Map<String, dynamic>, patientID);
-                      setState(() {});
+                      setState(() {
+                        if(medication['alarm_set']){
+                        navigateToAlarmScreen(null);}
+                      });
                     },
                     style: ElevatedButton.styleFrom(
                       shape: RoundedRectangleBorder(
